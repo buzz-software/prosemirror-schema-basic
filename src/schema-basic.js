@@ -5,7 +5,7 @@ import {Schema} from "prosemirror-model"
 export const nodes = {
   // :: NodeSpec The top level document node.
   doc: {
-    content: "block+"
+    content: "container+"
   },
 
   // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -24,6 +24,14 @@ export const nodes = {
     defining: true,
     parseDOM: [{tag: "blockquote"}],
     toDOM() { return ["blockquote", 0] }
+  },
+
+  section: {
+    content: "block+",
+    group: "container",
+    defining: true, /* Don't know what this is. */
+    parseDOM: [{tag: "div.section_content"}],
+    toDOM() { return ["div", { class: "section_content" }, 0] }
   },
 
   // :: NodeSpec A horizontal rule (`<hr>`).
@@ -87,7 +95,7 @@ export const nodes = {
         alt: dom.getAttribute("alt")
       }
     }}],
-    toDOM(node) { return ["img", node.attrs] }
+    toDOM(node) { return ["div", {class: "imageblock"}, ["img", node.attrs]] }
   },
 
   // :: NodeSpec A hard line break, represented in the DOM as `<br>`.
