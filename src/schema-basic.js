@@ -5,7 +5,7 @@ import {Schema} from "prosemirror-model"
 export const nodes = {
   // :: NodeSpec The top level document node.
   doc: {
-    content: "container+"
+    content: "section+"
   },
 
   // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -75,6 +75,15 @@ export const nodes = {
   text: {
     group: "inline"
   },
+  
+  // :: NodeSpec Wrapper tag around images.
+  image_block: {
+    content: "inline+",
+    group: "block",
+    defining: true,
+    parseDOM: [{ tag: "div.imageblock" }],
+    toDOM() { return ["div", { class: "imageblock"}, 0] }
+  },
 
   // :: NodeSpec An inline image (`<img>`) node. Supports `src`,
   // `alt`, and `href` attributes. The latter two default to the empty
@@ -95,7 +104,7 @@ export const nodes = {
         alt: dom.getAttribute("alt")
       }
     }}],
-    toDOM(node) { return ["div", {class: "imageblock"}, ["img", node.attrs]] }
+    toDOM(node) { return ["img", node.attrs] }
   },
 
   // :: NodeSpec A hard line break, represented in the DOM as `<br>`.
