@@ -17,6 +17,18 @@ export const nodes = {
     toDOM() { return ["p", { class: "lead" }, 0] }
   },
 
+  // A special paragraph that goes under images only.
+  caption: {
+    content: "inline*",
+    group: "block",
+    attrs: { class: {default: "caption"}},
+    parseDOM: [{tag: "p.caption"}],
+    toDOM(node) { 
+      node.attrs["data-placeholder"] = "Add caption here.";
+      return ["p", node.attrs, 0] 
+    }
+  },
+
   // :: NodeSpec A blockquote (`<blockquote>`) wrapping one or more blocks.
   blockquote: {
     content: "block+",
@@ -29,9 +41,10 @@ export const nodes = {
   section: {
     content: "block+",
     group: "container",
+    attrs: { class: { default: "section_content"} },
     defining: true, /* Don't know what this is. */
-    parseDOM: [{tag: "div.section_content"}],
-    toDOM() { return ["div", { class: "section_content" }, 0] }
+    parseDOM: [{tag: "div.section_content"}, {tag: "div.section_content.editor-image"}],
+    toDOM(node) { return ["div", node.attrs, 0] }
   },
 
   // :: NodeSpec A horizontal rule (`<hr>`).
@@ -78,7 +91,7 @@ export const nodes = {
   
   // :: NodeSpec Wrapper tag around images.
   image_block: {
-    content: "inline+",
+    content: "image+",
     group: "block",
     defining: true,
     parseDOM: [{ tag: "div.imageblock" }],
@@ -89,13 +102,14 @@ export const nodes = {
   // `alt`, and `href` attributes. The latter two default to the empty
   // string.
   image: {
-    inline: true,
+    inline: false,
+    isLeaf: true,
     attrs: {
-      src: {},
+      src: { default: null},
       alt: {default: null},
       title: {default: null}
     },
-    group: "inline",
+    /*group: "",*/
     draggable: true,
     parseDOM: [{tag: "img[src]", getAttrs(dom) {
       return {
