@@ -5,7 +5,7 @@ import {Schema} from "prosemirror-model"
 export const nodes = {
   // :: NodeSpec The top level document node.
   doc: {
-    content: "section+"
+    content: "(section|image_section)+"
   },
 
   // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -38,13 +38,31 @@ export const nodes = {
     toDOM() { return ["blockquote", 0] }
   },
 
+/*
   section: {
     content: "block+",
     group: "container",
     attrs: { class: { default: "section_content"} },
-    defining: true, /* Don't know what this is. */
+    defining: true, 
     parseDOM: [{tag: "div.section_content"}, {tag: "div.section_content.editor-image"}],
     toDOM(node) { return ["div", node.attrs, 0] }
+  },
+*/
+
+  section: {
+    content: "block+",
+    group: "container",
+    defining: true,
+    parseDOM: [{tag: "div.section_content"}],
+    toDOM(node) { return ["div", { class: "section_content" }, 0] }
+  },
+
+  image_section: {
+    content: "(image_block){1}(caption){1}",
+    group: "container",
+    defining: true, /* Don't know what this is. */
+    parseDOM: [{tag: "div.section_content.editor-image"}],
+    toDOM(node) { return ["div", {class: "section_content editor-image"}, 0] }
   },
 
   // :: NodeSpec A horizontal rule (`<hr>`).
@@ -91,7 +109,7 @@ export const nodes = {
   
   // :: NodeSpec Wrapper tag around images.
   image_block: {
-    content: "image+",
+    content: "image{1}",
     group: "block",
     defining: true,
     parseDOM: [{ tag: "div.imageblock" }],
@@ -110,7 +128,7 @@ export const nodes = {
       title: {default: null}
     },
     /*group: "",*/
-    draggable: true,
+    /*draggable: true,*/
     parseDOM: [{tag: "img[src]", getAttrs(dom) {
       return {
         src: dom.getAttribute("src"),
