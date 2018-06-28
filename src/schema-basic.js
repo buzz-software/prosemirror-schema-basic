@@ -5,7 +5,7 @@ import {Schema} from "prosemirror-model"
 export const nodes = {
   // :: NodeSpec The top level document node.
   doc: {
-    content: "(section|image_section)+"
+    content: "(section|imagesection)+"
   },
 
   // :: NodeSpec A plain paragraph textblock. Represented in the DOM
@@ -17,6 +17,7 @@ export const nodes = {
     toDOM() { return ["p", { class: "lead" }, 0] }
   },
 
+/*
   // A special paragraph that goes under images only.
   caption: {
     content: "inline*",
@@ -28,6 +29,7 @@ export const nodes = {
       return ["p", node.attrs, 0] 
     }
   },
+*/
 
   // :: NodeSpec A blockquote (`<blockquote>`) wrapping one or more blocks.
   blockquote: {
@@ -57,13 +59,60 @@ export const nodes = {
     toDOM(node) { return ["div", { class: "section_content" }, 0] }
   },
 
+  // return ["pre", ["code", 0]]
+
+  imagesection: {
+    group: "container",
+    inline: false,
+    isLeaf: true,
+    //content: "inline*",
+    //defining: true,
+    //inlineContent: true,
+    attrs: {
+      src: { default: null},
+      alt: {default: null},
+      title: {default: null}
+    },
+    parseDOM: [{tag: "div.section_content editor-image"}],
+    toDOM(node) {
+      return ["div", {class: "section_content editor-image"}, ["div", {class:"imageblock"}, ["img", node.attrs]]]
+      /*["div", {class: "section_content editor-image"},["div", {class: "imageblock"}, ["img", node.attrs]]
+        ["p", {class: "caption"}]
+      ]*/
+    }
+
+  },
+  image: {
+    group: "container",
+    inline: false,
+    isLeaf: true,
+    attrs: {
+      src: { default: null},
+      alt: {default: null},
+      title: {default: null}
+    },
+    //group: "",
+    //draggable: true,
+    parseDOM: [{tag: "img[src]", getAttrs(dom) {
+      return {
+        src: dom.getAttribute("src"),
+        title: dom.getAttribute("title"),
+        alt: dom.getAttribute("alt")
+      }
+    }}],
+    toDOM(node) { return ["img", node.attrs] }
+  },
+
+/*
+
   image_section: {
     content: "(image_block){1}(caption){1}",
     group: "container",
-    defining: true, /* Don't know what this is. */
+    defining: true,
     parseDOM: [{tag: "div.section_content.editor-image"}],
     toDOM(node) { return ["div", {class: "section_content editor-image"}, 0] }
   },
+*/
 
   // :: NodeSpec A horizontal rule (`<hr>`).
   horizontal_rule: {
@@ -106,7 +155,8 @@ export const nodes = {
   text: {
     group: "inline"
   },
-  
+
+/*  
   // :: NodeSpec Wrapper tag around images.
   image_block: {
     content: "image{1}",
@@ -115,29 +165,13 @@ export const nodes = {
     parseDOM: [{ tag: "div.imageblock" }],
     toDOM() { return ["div", { class: "imageblock"}, 0] }
   },
+*/
 
   // :: NodeSpec An inline image (`<img>`) node. Supports `src`,
   // `alt`, and `href` attributes. The latter two default to the empty
   // string.
-  image: {
-    inline: false,
-    isLeaf: true,
-    attrs: {
-      src: { default: null},
-      alt: {default: null},
-      title: {default: null}
-    },
-    /*group: "",*/
-    /*draggable: true,*/
-    parseDOM: [{tag: "img[src]", getAttrs(dom) {
-      return {
-        src: dom.getAttribute("src"),
-        title: dom.getAttribute("title"),
-        alt: dom.getAttribute("alt")
-      }
-    }}],
-    toDOM(node) { return ["img", node.attrs] }
-  },
+
+
 
   // :: NodeSpec A hard line break, represented in the DOM as `<br>`.
   hard_break: {
