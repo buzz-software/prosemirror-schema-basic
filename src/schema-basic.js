@@ -17,20 +17,6 @@ export const nodes = {
     toDOM() { return ["p", { class: "lead" }, 0] }
   },
 
-/*
-  // A special paragraph that goes under images only.
-  caption: {
-    content: "inline*",
-    group: "block",
-    attrs: { class: {default: "caption"}},
-    parseDOM: [{tag: "p.caption"}],
-    toDOM(node) { 
-      node.attrs["data-placeholder"] = "Add caption here.";
-      return ["p", node.attrs, 0] 
-    }
-  },
-*/
-
   // :: NodeSpec A blockquote (`<blockquote>`) wrapping one or more blocks.
   blockquote: {
     content: "block+",
@@ -40,17 +26,6 @@ export const nodes = {
     toDOM() { return ["blockquote", 0] }
   },
 
-/*
-  section: {
-    content: "block+",
-    group: "container",
-    attrs: { class: { default: "section_content"} },
-    defining: true, 
-    parseDOM: [{tag: "div.section_content"}, {tag: "div.section_content.editor-image"}],
-    toDOM(node) { return ["div", node.attrs, 0] }
-  },
-*/
-
   section: {
     content: "block+",
     group: "container",
@@ -59,23 +34,9 @@ export const nodes = {
     toDOM(node) { return ["div", { class: "section_content" }, 0] }
   },
 
-  // return ["pre", ["code", 0]]
-//       node.attrs["data-placeholder"] = "Add caption here.";
-
-  // A special paragraph that goes under images only.
-  
-  caption: {
-    content: "text*",
-    /*group: "block",*/
-    attrs: { class: {default: "caption"}},
-    parseDOM: [{tag: "p.caption"}],
-    toDOM(node) { 
-      node.attrs["data-placeholder"] = "Add caption here.";
-      return ["p", node.attrs, 0]
-    }
-  },
-
-/*["p", { class: "caption" }]*/
+  // Instantiating this section from the editor:
+  // let imagesection = mySchema.nodes.imagesection.create({src: url})
+  // view.dispatch(view.state.tr.insert(pos, imagesection).setMeta(placeholderPlugin, {remove: {id}}))
   imagesection: {
     group: "container",
     //inline: true,
@@ -86,14 +47,17 @@ export const nodes = {
     attrs: {
       src: { default: null},
       alt: {default: null},
-      title: {default: null}
+      title: {default: null},
     },
     parseDOM: [{tag: "div.section_content editor-image"}],
     toDOM(node) {
-      return ["div", {class: "section_content editor-image"}, ["div", {class:"imageblock"}, ["img", node.attrs]], ["p", {class: "caption"}, 0]]
+      return ["div", {class: "section_content editor-image"}, ["div", { class: "imageblock" }, ["img", node.attrs]], ["p", {class: "caption"}, 0]]
     }
   },
 
+  // :: NodeSpec An inline image (`<img>`) node. Supports `src`,
+  // `alt`, and `href` attributes. The latter two default to the empty
+  // string.
   image: {
     group: "container",
     inline: false,
@@ -114,17 +78,6 @@ export const nodes = {
     }}],
     toDOM(node) { return ["img", node.attrs] }
   },
-
-/*
-
-  image_section: {
-    content: "(image_block){1}(caption){1}",
-    group: "container",
-    defining: true,
-    parseDOM: [{tag: "div.section_content.editor-image"}],
-    toDOM(node) { return ["div", {class: "section_content editor-image"}, 0] }
-  },
-*/
 
   // :: NodeSpec A horizontal rule (`<hr>`).
   horizontal_rule: {
@@ -167,23 +120,6 @@ export const nodes = {
   text: {
     group: "inline"
   },
-
-/*  
-  // :: NodeSpec Wrapper tag around images.
-  image_block: {
-    content: "image{1}",
-    group: "block",
-    defining: true,
-    parseDOM: [{ tag: "div.imageblock" }],
-    toDOM() { return ["div", { class: "imageblock"}, 0] }
-  },
-*/
-
-  // :: NodeSpec An inline image (`<img>`) node. Supports `src`,
-  // `alt`, and `href` attributes. The latter two default to the empty
-  // string.
-
-
 
   // :: NodeSpec A hard line break, represented in the DOM as `<br>`.
   hard_break: {
