@@ -75,7 +75,7 @@ export const nodes = {
     },
     parseDOM: [{tag: "div.section_content editor-image"}],
     toDOM(node) {
-      return ["div", {class: "section_content editor-image"}, ["div", {class:"imageblock"}, ["img", node.attrs]]]
+      return ["div", {class: "section_content editor-image"}, ["div", {class:"imageblock"}, ["img", node.attrs]], ["p", { class: "caption" }]]
       /*["div", {class: "section_content editor-image"},["div", {class: "imageblock"}, ["img", node.attrs]]
         ["p", {class: "caption"}]
       ]*/
