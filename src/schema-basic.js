@@ -60,14 +60,29 @@ export const nodes = {
   },
 
   // return ["pre", ["code", 0]]
+//       node.attrs["data-placeholder"] = "Add caption here.";
 
+  // A special paragraph that goes under images only.
+  
+  caption: {
+    content: "text*",
+    /*group: "block",*/
+    attrs: { class: {default: "caption"}},
+    parseDOM: [{tag: "p.caption"}],
+    toDOM(node) { 
+      node.attrs["data-placeholder"] = "Add caption here.";
+      return ["p", node.attrs, 0]
+    }
+  },
+
+/*["p", { class: "caption" }]*/
   imagesection: {
     group: "container",
-    inline: false,
+    //inline: true,
     isLeaf: true,
-    //content: "inline*",
+    content: "text*",
     //defining: true,
-    //inlineContent: true,
+    inlineContent: true,
     attrs: {
       src: { default: null},
       alt: {default: null},
@@ -75,13 +90,10 @@ export const nodes = {
     },
     parseDOM: [{tag: "div.section_content editor-image"}],
     toDOM(node) {
-      return ["div", {class: "section_content editor-image"}, ["div", {class:"imageblock"}, ["img", node.attrs]], ["p", { class: "caption" }]]
-      /*["div", {class: "section_content editor-image"},["div", {class: "imageblock"}, ["img", node.attrs]]
-        ["p", {class: "caption"}]
-      ]*/
+      return ["div", {class: "section_content editor-image"}, ["div", {class:"imageblock"}, ["img", node.attrs]], ["p", {class: "caption"}, 0]]
     }
-
   },
+
   image: {
     group: "container",
     inline: false,
