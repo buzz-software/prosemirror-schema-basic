@@ -26,14 +26,6 @@ export const nodes = {
     toDOM() { return ["blockquote", 0] }
   },
 
-  section: {
-    content: "block+",
-    group: "container",
-    defining: true,
-    parseDOM: [{tag: "div.section_content"}],
-    toDOM(node) { return ["div", { class: "section_content" }, 0] }
-  },
-
   // Instantiating this section from the editor:
   // let imagesection = mySchema.nodes.imagesection.create({src: url})
   // view.dispatch(view.state.tr.insert(pos, imagesection).setMeta(placeholderPlugin, {remove: {id}}))
@@ -49,12 +41,27 @@ export const nodes = {
       alt: {default: null},
       title: {default: null},
     },
-    parseDOM: [{tag: "div.section_content editor-image"}],
+    parseDOM: [{tag: "div.section_content.editor-image", getAttrs(dom) {
+      let img = dom.querySelector("img")
+      return !img ? false : {
+        src: img.getAttribute("src"),
+        title: img.getAttribute("title"),
+        alt: img.getAttribute("alt")
+      }
+    }}],
     toDOM(node) {
       return ["div", {class: "section_content editor-image"}, ["div", { class: "imageblock" }, ["img", node.attrs]], ["p", {class: "caption"}, 0]]
     }
   },
 
+  section: {
+    content: "block+",
+    group: "container",
+    defining: true,
+    parseDOM: [{tag: "div.section_content"}],
+    toDOM(node) { return ["div", { class: "section_content" }, 0] }
+  },
+  
   // :: NodeSpec An inline image (`<img>`) node. Supports `src`,
   // `alt`, and `href` attributes. The latter two default to the empty
   // string.
