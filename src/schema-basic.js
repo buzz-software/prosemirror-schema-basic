@@ -174,7 +174,10 @@ export const marks = {
                {style: "font-weight", getAttrs: value => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null}],
     toDOM() { return ["b"] }
   },
-
+  underlined: {
+    parseDOM: [{tag: "span.underlined"}],
+    toDOM() { return ["span", { class: "underlined" }, 0] }
+  },
   // :: MarkSpec Code font mark. Represented as a `<code>` element.
   code: {
     parseDOM: [{tag: "code"}],
