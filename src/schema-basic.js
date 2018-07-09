@@ -5,7 +5,8 @@ import {Schema} from "prosemirror-model"
 export const nodes = {
   // :: NodeSpec The top level document node.
   doc: {
-    content: "(section|imagesection)+"
+    content: "(section|imagesection)+",
+    toDOM() { return ["div", 0] }
   },
 
   // :: NodeSpec A plain paragraph textblock. Represented in the DOM
